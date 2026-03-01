@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Organizador de Prateleiras</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Organizador de Prateleiras - Farmácia</h1>
+    {% if current_user.is_authenticated %}
+      <nav>
+        <span>{{ current_user.nome }} ({{ current_user.secao.nome }})</span>
+        <a href="{{ url_for('logout') }}">Sair</a>
+      </nav>
+    {% endif %}
+  </header>
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="mensagens">
+          {% for categoria, mensagem in messages %}
+            <li class="{{ categoria }}">{{ mensagem }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="grid">
+  <article class="card">
+    <h2>Alertas em tempo real</h2>
+    <p><strong>Total produtos:</strong> <span id="total">0</span></p>
+    <p><strong>Vencidos:</strong> <span id="vencidos">0</span></p>
+    <p><strong>Pré-vencidos:</strong> <span id="pre-vencidos">0</span></p>
+    <ul id="itens-criticos"></ul>
+  </article>
+
+  <article class="card">
+    <h2>Novo produto</h2>
+    <form method="post" action="{{ url_for('criar_produto') }}" enctype="multipart/form-data" id="form-produto">
+      <label>Nome do produto <input type="text" name="nome" required></label>
+      <label>Validade <input type="date" name="validade" required></label>
+      <label>Seção
+        <select name="section_id" required>
+          {% for secao in secoes %}
+            <option value="{{ secao.id }}" {% if secao.id == current_user.section_id %}selected{% endif %}>{{ secao.nome }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Foto do produto <input type="file" name="foto" accept="image/*" capture="environment"></label>
+      <label><input type="checkbox" name="pre_vencido_ativo" id="pre-vencido-checkbox"> Possui controle de pré-vencido</label>
+      <div id="pre-vencido-campos" class="escondido">
+        <label>Início do pré-vencido <input type="date" name="data_inicio_pre_vencido"></label>
+        <label>Data para retirar da prateleira <input type="date" name="data_retirar_prateleira"></label>
+      </div>
+      <button type="submit">Salvar produto</button>
+    </form>
+  </article>
+</section>
+
+<section class="card">
+  <h2>Produtos cadastrados</h2>
+  <div class="tabela-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Status</th>
+          <th>Validade</th>
+          <th>Pré-vencido desde</th>
+          <th>Retirar prateleira</th>
+          <th>Seção</th>
+          <th>Foto</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in produtos %}
+          <tr>
+            <td>{{ p.nome }}</td>
+            <td>{{ p.status }}</td>
+            <td>{{ p.validade.strftime('%d/%m/%Y') }}</td>
+            <td>{{ p.data_inicio_pre_vencido.strftime('%d/%m/%Y') if p.data_inicio_pre_vencido else '-' }}</td>
+            <td>{{ p.data_retirar_prateleira.strftime('%d/%m/%Y') if p.data_retirar_prateleira else '-' }}</td>
+            <td>{{ p.secao.nome }}</td>
+            <td>
+              {% if p.foto_nome %}
+                <a href="{{ url_for('uploaded_file', filename=p.foto_nome) }}" target="_blank">Ver</a>
+              {% else %}
+                -
+              {% endif %}
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="7">Nenhum produto cadastrado.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+{% endblock %}
