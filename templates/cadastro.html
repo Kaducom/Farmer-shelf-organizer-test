@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="card">
+  <h2>Criar perfil</h2>
+  <form method="post">
+    <label>Nome <input type="text" name="nome" required></label>
+    <label>E-mail <input type="email" name="email" required></label>
+    <label>Senha <input type="password" name="senha" required></label>
+    <label>Sua seção (ex.: Prateleira 1) <input type="text" name="secao" required></label>
+    <button type="submit">Cadastrar</button>
+  </form>
+  <p>Já possui conta? <a href="{{ url_for('login') }}">Entrar</a></p>
+</section>
+{% endblock %}
